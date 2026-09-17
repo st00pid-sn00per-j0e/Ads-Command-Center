@@ -22,6 +22,11 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Invites',
+        href: '/admin/invitations',
+        icon: FolderGit2,
+    },
 ];
 
 const footerNavItems: NavItem[] = [

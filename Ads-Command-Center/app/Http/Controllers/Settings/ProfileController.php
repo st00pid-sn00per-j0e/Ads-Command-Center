@@ -19,9 +19,27 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user();
+
+        $role = null;
+        if ($user->organization_id) {
+            $org = $user->organizations()->where('organizations.id', $user->organization_id)->first();
+            if ($org && $org->pivot && $org->pivot->role) {
+                $role = $org->pivot->role;
+            }
+        }
+
+        if (! $role && isset($user->role)) {
+            $role = $user->role;
+        }
+
+        $role = $role ?? 'specialist';
+
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'role' => $role,
+            'emailVerified' => ! is_null($user->email_verified_at),
         ]);
     }
 

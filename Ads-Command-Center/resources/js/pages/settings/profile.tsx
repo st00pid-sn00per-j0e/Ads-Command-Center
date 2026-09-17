@@ -18,9 +18,13 @@ type PageProps = {
 export default function Profile({
     mustVerifyEmail,
     status,
+    role,
+    emailVerified,
 }: {
     mustVerifyEmail: boolean;
     status?: string;
+    role?: string;
+    emailVerified?: boolean;
 }) {
     const { auth } = usePage<PageProps>().props;
 
@@ -109,6 +113,17 @@ export default function Profile({
                                         )}
                                     </div>
                                 )}
+
+                            <div className="mt-4 rounded-md border p-3">
+                                <p className="text-sm">
+                                    <span className="font-medium">Role:</span>{' '}
+                                    {role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Specialist'}
+                                </p>
+                                <p className="text-sm mt-1">
+                                    <span className="font-medium">Email status:</span>{' '}
+                                    {emailVerified ? 'Verified' : 'Not verified'}
+                                </p>
+                            </div>
 
                             <div className="flex items-center gap-4">
                                 <Button

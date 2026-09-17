@@ -1,24 +1,32 @@
-import { Form, Head } from '@inertiajs/react';
+import { Head, Form } from '@inertiajs/react';
+import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { login } from '@/routes';
-import { store } from '@/routes/register';
+import { accept } from '@/routes/invitations';
 
 type Props = {
-    passwordRules: string;
+    email: string;
+    token: string;
+    organization?: string;
+    passwordRules?: string;
 };
 
-export default function Register({ passwordRules }: Props) {
+export default function InvitationAccept({
+    email,
+    token,
+    organization,
+    passwordRules,
+}: Props) {
     return (
         <>
-            <Head title="Register" />
+            <Head title="Accept invitation" />
+
             <Form
-                {...store.form()}
+                {...accept.form(token)}
                 resetOnSuccess={['password', 'password_confirmation']}
                 disableWhileProcessing
                 className="flex flex-col gap-6"
@@ -32,16 +40,10 @@ export default function Register({ passwordRules }: Props) {
                                     id="name"
                                     type="text"
                                     required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="name"
                                     name="name"
                                     placeholder="Full name"
                                 />
-                                <InputError
-                                    message={errors.name}
-                                    className="mt-2"
-                                />
+                                <InputError message={errors.name} />
                             </div>
 
                             <div className="grid gap-2">
@@ -50,25 +52,11 @@ export default function Register({ passwordRules }: Props) {
                                     id="email"
                                     type="email"
                                     required
-                                    tabIndex={2}
-                                    autoComplete="email"
                                     name="email"
-                                    placeholder="email@example.com"
+                                    value={email}
+                                    readOnly
                                 />
                                 <InputError message={errors.email} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="organization_name">Organization</Label>
-                                <Input
-                                    id="organization_name"
-                                    type="text"
-                                    required
-                                    tabIndex={2}
-                                    name="organization_name"
-                                    placeholder="Your organization or agency"
-                                />
-                                <InputError message={errors.organization_name} />
                             </div>
 
                             <div className="grid gap-2">
@@ -76,8 +64,6 @@ export default function Register({ passwordRules }: Props) {
                                 <PasswordInput
                                     id="password"
                                     required
-                                    tabIndex={3}
-                                    autoComplete="new-password"
                                     name="password"
                                     placeholder="Password"
                                     passwordrules={passwordRules}
@@ -92,8 +78,6 @@ export default function Register({ passwordRules }: Props) {
                                 <PasswordInput
                                     id="password_confirmation"
                                     required
-                                    tabIndex={4}
-                                    autoComplete="new-password"
                                     name="password_confirmation"
                                     placeholder="Confirm password"
                                     passwordrules={passwordRules}
@@ -106,19 +90,11 @@ export default function Register({ passwordRules }: Props) {
                             <Button
                                 type="submit"
                                 className="mt-2 w-full"
-                                tabIndex={5}
-                                data-test="register-user-button"
+                                data-test="accept-invitation-button"
                             >
                                 {processing && <Spinner />}
                                 Create account
                             </Button>
-                        </div>
-
-                        <div className="text-muted-foreground text-center text-sm">
-                            Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
-                                Log in
-                            </TextLink>
                         </div>
                     </>
                 )}
@@ -127,7 +103,7 @@ export default function Register({ passwordRules }: Props) {
     );
 }
 
-Register.layout = {
-    title: 'Create an account',
-    description: 'Enter your details below to create your account',
+InvitationAccept.layout = {
+    title: 'Accept invitation',
+    description: 'Complete your account setup for the organization',
 };
